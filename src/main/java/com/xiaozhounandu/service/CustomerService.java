@@ -17,4 +17,12 @@ public class CustomerService {
     public List<Customer> selectAllCustomers () {
         return customerMapper.selectAllCustomers();
     }
+
+    public Customer selectCustomerById (Integer id) {
+        return customerMapper.selectCustomerById(id);
+    }
+
+    public Customer insertCustomer(Customer customer){
+        return customerMapper.insertCustomer(customer);
+    }
 }

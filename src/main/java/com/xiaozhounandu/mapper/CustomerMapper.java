@@ -10,4 +10,11 @@ import java.util.List;
 public interface CustomerMapper {
 
    public List<Customer> selectAllCustomers();
+
+   public Customer selectCustomerById(Integer id);
+
+   public Customer insertCustomer(Customer customer);
+
+
+
 }

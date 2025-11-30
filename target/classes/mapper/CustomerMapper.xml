@@ -26,6 +26,24 @@
         FROM customer a left join baseentity b on a.id=b.owner_id
     </select>
 
+    <select id="selectCustomerById" resultMap="CustomerMap">
+        SELECT
+            a.id, a.name, a.phone, a.email, a.industry, a.address,
+            b.owner_id, b.create_time, b.update_time
+        FROM customer a
+                 LEFT JOIN baseentity b ON a.id = b.owner_id
+        WHERE a.id = #{id}
+    </select>
+
+
+    <insert id="insertCustomer" parameterType="com.xiaozhounandu.entity.Customer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO customer
+        (name, phone, email, industry, address, owner_id, create_time, update_time)
+        VALUES
+            (#{name}, #{phone}, #{email}, #{industry}, #{address}, #{ownerId}, #{createTime}, #{updateTime})
+    </insert>
+
+
 
 
 </mapper>
