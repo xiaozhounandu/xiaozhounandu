@@ -4,35 +4,37 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaozhounandu.mapper.CustomerMapper">
 
-    <resultMap id="BaseEntity" type="com.xiaozhounandu.entity.BaseEntity">
-        <result property="ownerId" column="owner_id"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateTime" column="update_time"/>
-    </resultMap>
+<!--    <resultMap id="BaseEntity" type="com.xiaozhounandu.entity.BaseEntity">-->
+<!--        <result property="ownerId" column="owner_id"/>-->
+<!--        <result property="createTime" column="create_time"/>-->
+<!--        <result property="updateTime" column="update_time"/>-->
+<!--    </resultMap>-->
 
     <!-- Customer 的映射，继承 BaseEntity -->
-    <resultMap id="CustomerMap" type="com.xiaozhounandu.entity.Customer" extends="BaseEntity">
+    <resultMap id="CustomerMap" type="com.xiaozhounandu.entity.Customer">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="phone" column="phone"/>
         <result property="email" column="email"/>
         <result property="industry" column="industry"/>
         <result property="address" column="address"/>
+        <result property="ownerId" column="owner_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <select id="selectAllCustomers" resultMap="CustomerMap">
         SELECT
-            a.id, a.name, a.phone, a.email, a.industry, a.address,b.owner_id,b.create_time,b.update_time
-        FROM customer a left join baseentity b on a.id=b.owner_id
+            id, name, phone, email, industry, address,owner_id,create_time,update_time
+        FROM customer
     </select>
 
     <select id="selectCustomerById" resultMap="CustomerMap">
         SELECT
-            a.id, a.name, a.phone, a.email, a.industry, a.address,
-            b.owner_id, b.create_time, b.update_time
-        FROM customer a
-                 LEFT JOIN baseentity b ON a.id = b.owner_id
-        WHERE a.id = #{id}
+            id, name, phone, email, industry, address,
+            owner_id, create_time, update_time
+        FROM customer
+        WHERE id = #{id}
     </select>
 
 
@@ -42,6 +44,21 @@
         VALUES
             (#{name}, #{phone}, #{email}, #{industry}, #{address}, #{ownerId}, #{createTime}, #{updateTime})
     </insert>
+
+
+    <!-- 更新客户 -->
+    <update id="updateCustomer" parameterType="com.xiaozhounandu.entity.Customer">
+         UPDATE customer SET
+           name = #{name}, phone = #{phone}, email = #{email}, industry = #{industry},
+           address = #{address}, owner_id = #{ownerId}, create_time = #{createTime},
+           update_time = #{updateTime} WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID删除客户 -->
+    <delete id="deleteCustomerById" parameterType="int">
+        DELETE FROM customer
+        WHERE id = #{id}
+    </delete>
 
 
 

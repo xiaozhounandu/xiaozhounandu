@@ -13,8 +13,10 @@ public interface CustomerMapper {
 
    public Customer selectCustomerById(Integer id);
 
-   public Customer insertCustomer(Customer customer);
+   public int insertCustomer(Customer customer);
 
+    public int deleteCustomerById(Integer id);
 
+    public int updateCustomer(Customer customer);
 
 }

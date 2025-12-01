@@ -19,18 +19,27 @@ public class CustomerController {
         return customerService.selectAllCustomers();
     }
 //    @GetMapping("/id/{id}")
-//    public Customer getAllCustomers(@RequestParam Integer id) {
+//    public Customer getAllCustomers(@PathVariable Integer id) {
 //        return customerService.selectCustomerById(id);
 //    }
-//http://localhost:8080/api/customers/id?id=1
+//      http://localhost:8080/api/customers/id?id=1
     @GetMapping("/id")
     public Customer getCustomerById(@RequestParam Integer id) {
         return customerService.selectCustomerById(id);
     }
 
     @PostMapping("/insert")
-    public Customer insertCustomer(@RequestBody Customer customer) {
+    public int insertCustomer(@RequestBody Customer customer) {
         return customerService.insertCustomer(customer);
+    }
+    @DeleteMapping("/id1")
+    public int deleteCustomerById(@RequestParam Integer id) {
+        return customerService.deleteCustomerById(id);
+    }
+    @PostMapping("/id2")
+    public int updateCustomer(@RequestBody Customer customer,@RequestParam Integer id ) {
+        customer.setId(Long.valueOf(id));
+        return customerService.updateCustomer(customer);
     }
 
 }
