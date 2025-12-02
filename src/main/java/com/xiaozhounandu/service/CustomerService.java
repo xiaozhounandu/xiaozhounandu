@@ -25,8 +25,8 @@ public class CustomerService {
 
     public int  insertCustomer(Customer customer) {
         LocalDate today = LocalDate.now();
-        customer.setCreateTime(today);
-        customer.setUpdateTime(today);
+        customer.setCreateTime(today.atStartOfDay());
+        customer.setUpdateTime(today.atStartOfDay());
         return customerMapper.insertCustomer(customer);
     }
 
@@ -43,7 +43,7 @@ public class CustomerService {
         customer.setCreateTime(oldCustomer.getCreateTime());
 
         // 3. 设置 updateTime 为当前日期
-        customer.setUpdateTime(LocalDate.now());
+        customer.setUpdateTime(LocalDate.now().atStartOfDay());
 
         return customerMapper.updateCustomer(customer);
     }
