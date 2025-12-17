@@ -1,0 +1,96 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+
+
+
+<!--<body>-->
+<!--<div id ='qu_code'>-->
+<!--    <img src="/Users/weizhijie/Desktop/图片1.png" id ="code">-->
+<!--    <span id ="close" >X</span>-->
+
+
+<!--</div>-->
+
+<!--</body>-->
+
+<!--<script>-->
+
+<!--    const qu_code =document.getElementById("qu_code");-->
+
+
+
+
+<!--    const close =document.getElementById("close");-->
+<!--    qu_code.innerHTML += `-->
+<!--    <button id="closeBtn"-->
+<!--        style="-->
+<!--            position: absolute;-->
+<!--            top: 5px;-->
+<!--            right: 5px;-->
+<!--            cursor: pointer;-->
+<!--        ">-->
+<!--        关闭-->
+<!--    </button>-->
+<!--`;-->
+
+
+
+<!--    document.getElementById("closeBtn").onclick =function (){-->
+<!--        qu_code.style.display="none";-->
+<!--    }-->
+
+
+
+
+<!--</script>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #qu_code {
+            position: relative;  /* 关键点：作为 absolute 子元素的定位容器 */
+            display: inline-block;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id='qu_code'>
+    <img src="/Users/weizhijie/Desktop/图片1.png" id="code" width="200">
+</div>
+
+</body>
+
+<script>
+    const qu_code = document.getElementById("qu_code");
+
+    qu_code.innerHTML += `
+        <button id="closeBtn"
+            style="
+                position: absolute;
+                top: 50px;
+                left: 50px;
+                cursor: pointer;
+                padding: 5px 10px;
+            ">
+            关闭
+        </button>
+    `;
+
+    // 注意：是 onclick，不是 click
+    document.getElementById("closeBtn").onclick = function () {
+        qu_code.style.display = "none";
+    };
+</script>
+
+</html>

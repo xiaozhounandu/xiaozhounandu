@@ -1,6 +1,14 @@
 <template>
   <div style="padding: 20px; font-family: Arial, sans-serif;">
-    <h2>客户管理系统</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2>客户管理系统</h2>
+      <div>
+        <span>当前用户：{{ currentUser?.username }} ({{ currentUser?.role }})</span>
+        <button @click="handleLogout" style="margin-left: 20px; padding: 5px 15px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          退出登录
+        </button>
+      </div>
+    </div>
 
     <!-- 新增 / 编辑区 -->
     <div style="margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
@@ -71,11 +79,13 @@
 
 <script>
 import axios from "axios";
+import { getCurrentUser, logout } from '../utils/auth';
 
 export default {
   data() {
     return {
       customers: [],
+      currentUser: null,
       form: {
         name: "",
         phone: "",
@@ -91,6 +101,19 @@ export default {
   },
 
   mounted() {
+    // 检查用户是否已登录
+    this.currentUser = getCurrentUser();
+    if (!this.currentUser) {
+      this.$router.push('/login');
+      return;
+    }
+
+    // 设置axios默认headers
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
     this.loadCustomers();
   },
 
@@ -157,6 +180,12 @@ export default {
       } catch (e) {
         console.error("删除客户失败:", e);
         alert("删除失败：" + e.message);
+      }
+    },
+
+    handleLogout() {
+      if (confirm('确认退出登录？')) {
+        logout();
       }
     }
   }

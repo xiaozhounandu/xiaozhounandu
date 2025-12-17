@@ -1,10 +1,12 @@
 package com.xiaozhounandu.controller;
 
 import com.xiaozhounandu.entity.Customer;
+import com.xiaozhounandu.entity.User;
 import com.xiaozhounandu.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -15,7 +17,12 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("/user")
-    public List<Customer> getAllCustomers() {
+    public List<Customer> getAllCustomers(HttpServletRequest request) {
+        // 获取当前登录用户
+        User currentUser = (User) request.getAttribute("currentUser");
+        System.out.println("当前用户: " + currentUser.getUsername() + ", 角色: " + currentUser.getRole());
+
+        // 这里可以根据用户角色过滤数据，暂时返回所有客户
         return customerService.selectAllCustomers();
     }
 //    @GetMapping("/id/{id}")

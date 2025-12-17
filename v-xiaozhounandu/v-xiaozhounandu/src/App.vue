@@ -23,12 +23,13 @@
 
 <template>
   <div>
-    <h1>我的系统</h1>
     <router-view />
   </div>
 </template>
 
 <script>
+
+
 export default {
   name: 'App'
 }
