@@ -1,66 +1,164 @@
-<?xml version = "1.0" encoding = "UTF-8"?>
-<!DOCTYPE mapper PUBLIC
-        "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaozhounandu.mapper.CustomerMapper">
 
-<!--    <resultMap id="BaseEntity" type="com.xiaozhounandu.entity.BaseEntity">-->
-<!--        <result property="ownerId" column="owner_id"/>-->
-<!--        <result property="createTime" column="create_time"/>-->
-<!--        <result property="updateTime" column="update_time"/>-->
-<!--    </resultMap>-->
-
-    <!-- Customer 的映射，继承 BaseEntity -->
-    <resultMap id="CustomerMap" type="com.xiaozhounandu.entity.Customer">
+    <resultMap id="CustomerResultMap" type="com.xiaozhounandu.entity.Customer">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
+        <result property="company" column="company"/>
         <result property="phone" column="phone"/>
         <result property="email" column="email"/>
         <result property="industry" column="industry"/>
+        <result property="position" column="position"/>
         <result property="address" column="address"/>
+        <result property="source" column="source"/>
+        <result property="status" column="status"/>
+        <result property="level" column="level"/>
         <result property="ownerId" column="owner_id"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="remark" column="remark"/>
+        <result property="nextFollowTime" column="next_follow_time"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-    <select id="selectAllCustomers" resultMap="CustomerMap">
-        SELECT
-            id, name, phone, email, industry, address,owner_id,create_time,update_time
-        FROM customer
+    <select id="selectByQuery" resultMap="CustomerResultMap">
+        SELECT c.*, u1.username as owner_name, u2.username as creator_name
+        FROM customer c
+        LEFT JOIN user u1 ON c.owner_id = u1.id
+        LEFT JOIN user u2 ON c.creator_id = u2.id
+        <where>
+            <if test="name != null and name != ''">
+                AND c.name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="company != null and company != ''">
+                AND c.company LIKE CONCAT('%', #{company}, '%')
+            </if>
+            <if test="status != null">
+                AND c.status = #{status}
+            </if>
+            <if test="level != null and level != ''">
+                AND c.level = #{level}
+            </if>
+            <if test="ownerId != null">
+                AND c.owner_id = #{ownerId}
+            </if>
+            AND c.status != 0
+        </where>
+        ORDER BY c.update_time DESC
+        LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="selectCustomerById" resultMap="CustomerMap">
-        SELECT
-            id, name, phone, email, industry, address,
-            owner_id, create_time, update_time
-        FROM customer
-        WHERE id = #{id}
+    <select id="countByQuery" resultType="int">
+        SELECT COUNT(*) FROM customer c
+        <where>
+            <if test="name != null and name != ''">
+                AND c.name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="company != null and company != ''">
+                AND c.company LIKE CONCAT('%', #{company}, '%')
+            </if>
+            <if test="status != null">
+                AND c.status = #{status}
+            </if>
+            <if test="level != null and level != ''">
+                AND c.level = #{level}
+            </if>
+            <if test="ownerId != null">
+                AND c.owner_id = #{ownerId}
+            </if>
+            AND c.status != 0
+        </where>
     </select>
 
+    <select id="selectById" resultMap="CustomerResultMap">
+        SELECT * FROM customer WHERE id = #{id} AND status != 0
+    </select>
 
-    <insert id="insertCustomer" parameterType="com.xiaozhounandu.entity.Customer" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO customer
-        (name, phone, email, industry, address, owner_id, create_time, update_time)
-        VALUES
-            (#{name}, #{phone}, #{email}, #{industry}, #{address}, #{ownerId}, #{createTime}, #{updateTime})
+    <select id="selectAllWithUser" resultMap="CustomerResultMap">
+        SELECT c.*, u1.username as owner_name, u2.username as creator_name
+        FROM customer c
+        LEFT JOIN user u1 ON c.owner_id = u1.id
+        LEFT JOIN user u2 ON c.creator_id = u2.id
+        WHERE c.status != 0
+        ORDER BY c.update_time DESC
+    </select>
+
+    <insert id="insert" parameterType="com.xiaozhounandu.entity.Customer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO customer (
+            name, company, phone, email, industry, position,
+            address, source, status, level, owner_id, creator_id, remark, next_follow_time
+        ) VALUES (
+            #{name}, #{company}, #{phone}, #{email}, #{industry}, #{position},
+            #{address}, #{source}, #{status}, #{level}, #{ownerId}, #{creatorId}, #{remark}, #{nextFollowTime}
+        )
     </insert>
 
-
-    <!-- 更新客户 -->
-    <update id="updateCustomer" parameterType="com.xiaozhounandu.entity.Customer">
-         UPDATE customer SET
-           name = #{name}, phone = #{phone}, email = #{email}, industry = #{industry},
-           address = #{address}, owner_id = #{ownerId}, create_time = #{createTime},
-           update_time = #{updateTime} WHERE id = #{id}
+    <update id="update" parameterType="com.xiaozhounandu.entity.Customer">
+        UPDATE customer SET
+            name = #{name},
+            company = #{company},
+            phone = #{phone},
+            email = #{email},
+            industry = #{industry},
+            position = #{position},
+            address = #{address},
+            source = #{source},
+            status = #{status},
+            level = #{level},
+            remark = #{remark},
+            next_follow_time = #{nextFollowTime}
+        WHERE id = #{id}
     </update>
 
-    <!-- 根据ID删除客户 -->
-    <delete id="deleteCustomerById" parameterType="int">
-        DELETE FROM customer
-        WHERE id = #{id}
+    <update id="updateOwnerId">
+        UPDATE customer SET owner_id = #{newOwnerId} WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE customer SET status = 0 WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM customer WHERE id = #{id}
     </delete>
 
+    <!-- 统计最近days天新增客户 -->
+    <select id="countNewCustomers" resultType="int">
+        SELECT COUNT(*) FROM customer
+        WHERE create_time >= DATE_SUB(NOW(), INTERVAL #{days} DAY)
+        AND status != 0
+    </select>
 
+    <!-- 获取最近7天新增客户统计 -->
+    <select id="getRecent7Days" resultType="java.util.HashMap">
+        <foreach collection="0..6" item="i" open="(" separator=" UNION ALL " close=")">
+            SELECT
+            DATE_SUB(CURDATE(), INTERVAL #{i} DAY) as date,
+            IFNULL((
+                SELECT COUNT(*) FROM customer
+                WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL #{i} DAY)
+                AND status != 0
+            ), 0) as count
+        </foreach>
+    </select>
 
+    <!-- 按行业统计 -->
+    <select id="getByIndustry" resultType="java.util.HashMap">
+        SELECT industry as name, COUNT(*) as count
+        FROM customer
+        WHERE status != 0 AND industry IS NOT NULL AND industry != ''
+        GROUP BY industry
+        ORDER BY count DESC
+    </select>
+
+    <!-- 按等级统计 -->
+    <select id="getByLevel" resultType="java.util.HashMap">
+        SELECT level as name, COUNT(*) as count
+        FROM customer
+        WHERE status != 0 AND level IS NOT NULL AND level != ''
+        GROUP BY level
+        ORDER BY count DESC
+    </select>
 
 </mapper>

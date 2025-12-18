@@ -49,6 +49,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <!-- Spring Security (用于BCrypt密码加密) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- 测试 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

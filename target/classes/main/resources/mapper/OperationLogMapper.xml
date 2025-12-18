@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaozhounandu.mapper.OperationLogMapper">
+
+    <resultMap id="OperationLogResultMap" type="com.xiaozhounandu.entity.OperationLog">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="module" column="module"/>
+        <result property="operation" column="operation"/>
+        <result property="targetId" column="target_id"/>
+        <result property="targetName" column="target_name"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="userAgent" column="user_agent"/>
+        <result property="beforeData" column="before_data"/>
+        <result property="afterData" column="after_data"/>
+        <result property="result" column="result"/>
+        <result property="errorMsg" column="error_msg"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectByQuery" resultMap="OperationLogResultMap">
+        SELECT l.*, u.username
+        FROM operation_log l
+        LEFT JOIN user u ON l.user_id = u.id
+        <where>
+            <if test="module != null and module != ''">
+                AND l.module = #{module}
+            </if>
+            <if test="operation != null and operation != ''">
+                AND l.operation = #{operation}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="startDate != null">
+                AND<![CDATA[ l.create_time >= #{startDate} ]]>
+            </if>
+            <if test="endDate != null">
+                AND<![CDATA[ l.create_time <= #{endDate} ]]>
+            </if>
+        </where>
+        ORDER BY l.create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countByQuery" resultType="int">
+        SELECT COUNT(*) FROM operation_log l
+        LEFT JOIN user u ON l.user_id = u.id
+        <where>
+            <if test="module != null and module != ''">
+                AND l.module = #{module}
+            </if>
+            <if test="operation != null and operation != ''">
+                AND l.operation = #{operation}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="startDate != null">
+                AND<![CDATA[ l.create_time >= #{startDate} ]]>
+            </if>
+            <if test="endDate != null">
+                AND<![CDATA[ l.create_time <= #{endDate} ]]>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.xiaozhounandu.entity.OperationLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO operation_log (
+            user_id, module, operation, target_id, target_name,
+            ip_address, user_agent, before_data, after_data, result, error_msg
+        ) VALUES (
+            #{userId}, #{module}, #{operation}, #{targetId}, #{targetName},
+            #{ipAddress}, #{userAgent}, #{beforeData}, #{afterData}, #{result}, #{errorMsg}
+        )
+    </insert>
+
+</mapper>

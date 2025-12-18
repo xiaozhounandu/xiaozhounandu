@@ -1,36 +1,37 @@
 package com.xiaozhounandu.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer   {
-
+public class Customer {
     private Long id;
     private String name;
+    private String company;
     private String phone;
     private String email;
     private String industry;
+    private String position;
     private String address;
+    private String source;
+    private Integer status; // 0-删除, 1-正常, 2-已成交, 3-流失
+    private String level; // A/B/C/D
     private Long ownerId;
-    // 2. 确保 pattern 只有日期，并使用新的日期格式化类
+    private Long creatorId;
+    private String remark;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime nextFollowTime;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
-
-
-
 }

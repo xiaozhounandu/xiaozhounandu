@@ -1,51 +1,41 @@
 package com.xiaozhounandu.service;
 
+import com.xiaozhounandu.dto.request.CustomerQueryRequest;
+import com.xiaozhounandu.dto.response.PageResponse;
 import com.xiaozhounandu.entity.Customer;
-import com.xiaozhounandu.mapper.CustomerMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
-@Service
-public class CustomerService {
-    @Autowired
-    private CustomerMapper customerMapper;
+public interface CustomerService {
+    PageResponse<Customer> getCustomerList(CustomerQueryRequest query);
 
-    public List<Customer> selectAllCustomers() {
-        return customerMapper.selectAllCustomers();
-    }
+    Customer getCustomerById(Long id);
 
-    public Customer selectCustomerById(Integer id) {
-        return customerMapper.selectCustomerById(id);
-    }
+    Customer getCustomerByIdWithDetail(Long id);
 
-    public int  insertCustomer(Customer customer) {
-        LocalDate today = LocalDate.now();
-        customer.setCreateTime(today.atStartOfDay());
-        customer.setUpdateTime(today.atStartOfDay());
-        return customerMapper.insertCustomer(customer);
-    }
+    int addCustomer(Customer customer);
 
-    public int deleteCustomerById(Integer id) {
-            return   customerMapper.deleteCustomerById(id);
+    int updateCustomer(Long id, Customer customer);
 
-    }
+    int deleteCustomer(Long id);
 
-    public int updateCustomer(Customer customer) {
-        // 1. 先查询出旧的客户数据，以获取原始的 createTime
-        Customer oldCustomer = customerMapper.selectCustomerById(Math.toIntExact(customer.getId()));
+    int transferCustomer(Long id, Long newOwnerId);
 
-        // 2. 将原始的创建时间设置回传入的对象中，防止其被更新为 null 或新日期
-        customer.setCreateTime(oldCustomer.getCreateTime());
+    // 统计数据
+    Long countTotalCustomers();
 
-        // 3. 设置 updateTime 为当前日期
-        customer.setUpdateTime(LocalDate.now().atStartOfDay());
+    Long countNewCustomers(int days);
 
-        return customerMapper.updateCustomer(customer);
-    }
+    Long countActiveCustomers();
+
+    Long countDealedCustomers();
+
+    Long countLostCustomers();
+
+    List<Map<String, Object>> getRecent7Days();
+
+    List<Map<String, Object>> getByIndustry();
+
+    List<Map<String, Object>> getByLevel();
 }
-

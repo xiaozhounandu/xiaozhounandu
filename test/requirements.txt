@@ -1,0 +1,20 @@
+# 自动化测试依赖
+
+# HTTP 请求库
+requests>=2.31.0
+
+# 测试框架 (可选)
+pytest>=7.4.0
+pytest-html>=3.2.0
+
+# 并发测试
+concurrent-futures>=3.10.0
+
+# JSON 处理
+jsonschema>=4.19.0
+
+# 时间处理
+python-dateutil>=2.8.0
+
+# 报告生成
+allure-pytest>=2.13.2  # 可选: 生成美观的测试报告

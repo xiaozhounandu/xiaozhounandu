@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaozhounandu.mapper.FollowUpMapper">
+
+    <resultMap id="FollowUpResultMap" type="com.xiaozhounandu.entity.FollowUp">
+        <id property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="followerId" column="follower_id"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="result" column="result"/>
+        <result property="attachment" column="attachment"/>
+        <result property="nextFollowTime" column="next_follow_time"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectByCustomerId" resultMap="FollowUpResultMap">
+        SELECT * FROM follow_up
+        WHERE customer_id = #{customerId}
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countByCustomerId" resultType="int">
+        SELECT COUNT(*) FROM follow_up WHERE customer_id = #{customerId}
+    </select>
+
+    <insert id="insert" parameterType="com.xiaozhounandu.entity.FollowUp" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO follow_up (
+            customer_id, follower_id, type, content, result, attachment, next_follow_time
+        ) VALUES (
+            #{customerId}, #{followerId}, #{type}, #{content}, #{result}, #{attachment}, #{nextFollowTime}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM follow_up WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="FollowUpResultMap">
+        SELECT * FROM follow_up WHERE id = #{id}
+    </select>
+
+    <select id="selectRecentDays" resultMap="FollowUpResultMap">
+        SELECT * FROM follow_up
+        WHERE create_time >= DATE_SUB(NOW(), INTERVAL #{days} DAY)
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 统计今日跟进数 -->
+    <select id="countTodayFollowUps" resultType="int">
+        SELECT COUNT(*) FROM follow_up
+        WHERE DATE(create_time) = CURDATE()
+    </select>
+
+    <!-- 统计即将跟进数(未来3天内) -->
+    <select id="countUpcomingFollowUps" resultType="int">
+        SELECT COUNT(*) FROM follow_up
+        WHERE next_follow_time IS NOT NULL
+        AND DATE(next_follow_time) BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)
+    </select>
+
+</mapper>

@@ -16,8 +16,13 @@ public class User {
     private String password;
     private String email;
     private String phone;
-    private String role; // 角色：ADMIN, USER
-    private Integer status; // 状态：0-禁用，1-启用
+    private String nickname;
+    private String avatar;
+    private String role; // ADMIN, MANAGER, USER
+    private Integer status; // 0-禁用, 1-启用
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastLoginTime;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
