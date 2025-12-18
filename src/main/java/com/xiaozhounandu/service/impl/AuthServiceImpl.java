@@ -39,6 +39,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public int register(User user) {
+        // 检查必要字段
+        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
+            return -2; // 用户名不能为空
+        }
+
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            return -3; // 密码不能为空
+        }
+
         // 检查用户名是否存在
         if (userMapper.findByUsername(user.getUsername()) != null) {
             return -1; // 用户名已存在

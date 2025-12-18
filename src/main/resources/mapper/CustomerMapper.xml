@@ -132,15 +132,26 @@
 
     <!-- 获取最近7天新增客户统计 -->
     <select id="getRecent7Days" resultType="java.util.HashMap">
-        <foreach collection="0..6" item="i" open="(" separator=" UNION ALL " close=")">
-            SELECT
-            DATE_SUB(CURDATE(), INTERVAL #{i} DAY) as date,
-            IFNULL((
-                SELECT COUNT(*) FROM customer
-                WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL #{i} DAY)
-                AND status != 0
-            ), 0) as count
-        </foreach>
+        SELECT DATE_SUB(CURDATE(), INTERVAL 6 DAY) as date,
+               IFNULL((SELECT COUNT(*) FROM customer WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 6 DAY) AND status != 0), 0) as count
+        UNION ALL
+        SELECT DATE_SUB(CURDATE(), INTERVAL 5 DAY) as date,
+               IFNULL((SELECT COUNT(*) FROM customer WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 5 DAY) AND status != 0), 0) as count
+        UNION ALL
+        SELECT DATE_SUB(CURDATE(), INTERVAL 4 DAY) as date,
+               IFNULL((SELECT COUNT(*) FROM customer WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 4 DAY) AND status != 0), 0) as count
+        UNION ALL
+        SELECT DATE_SUB(CURDATE(), INTERVAL 3 DAY) as date,
+               IFNULL((SELECT COUNT(*) FROM customer WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND status != 0), 0) as count
+        UNION ALL
+        SELECT DATE_SUB(CURDATE(), INTERVAL 2 DAY) as date,
+               IFNULL((SELECT COUNT(*) FROM customer WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND status != 0), 0) as count
+        UNION ALL
+        SELECT DATE_SUB(CURDATE(), INTERVAL 1 DAY) as date,
+               IFNULL((SELECT COUNT(*) FROM customer WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND status != 0), 0) as count
+        UNION ALL
+        SELECT CURDATE() as date,
+               IFNULL((SELECT COUNT(*) FROM customer WHERE DATE(create_time) = CURDATE() AND status != 0), 0) as count
     </select>
 
     <!-- 按行业统计 -->
@@ -161,4 +172,32 @@
         ORDER BY count DESC
     </select>
 
+    <!-- 按状态统计 -->
+    <select id="getByStatus" resultType="java.util.HashMap">
+        SELECT
+            CASE status
+                WHEN 0 THEN '删除'
+                WHEN 1 THEN '正常'
+                WHEN 2 THEN '成交'
+                WHEN 3 THEN '流失'
+            END as name,
+            COUNT(*) as count
+        FROM customer
+        GROUP BY status
+        ORDER BY status
+    </select>
+
+    <!-- 月度趋势统计 - 兼容性优化 -->
+    <select id="getMonthlyTrend" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') as month,
+            COUNT(*) as newCustomers
+        FROM customer
+        WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ORDER BY month
+    </select>
+
+    
+    
 </mapper>

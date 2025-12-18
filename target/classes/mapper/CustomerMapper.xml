@@ -161,4 +161,68 @@
         ORDER BY count DESC
     </select>
 
+    <!-- 按状态统计 -->
+    <select id="getByStatus" resultType="java.util.HashMap">
+        SELECT
+            CASE status
+                WHEN 0 THEN '删除'
+                WHEN 1 THEN '正常'
+                WHEN 2 THEN '成交'
+                WHEN 3 THEN '流失'
+            END as name,
+            COUNT(*) as count
+        FROM customer
+        GROUP BY status
+        ORDER BY status
+    </select>
+
+    <!-- 月度趋势统计 - 兼容性优化 -->
+    <select id="getMonthlyTrend" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') as month,
+            COUNT(*) as newCustomers
+        FROM customer
+        WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ORDER BY month
+    </select>
+
+    <!-- 跟进统计 - 按类型统计 -->
+    <select id="getFollowUpStats" resultType="java.util.HashMap">
+        SELECT
+            type as name,
+            COUNT(*) as count
+        FROM follow_up
+        WHERE status != 0
+        GROUP BY type
+        ORDER BY count DESC
+    </select>
+
+    <!-- 客户来源统计 -->
+    <select id="getBySource" resultType="java.util.HashMap">
+        SELECT
+            source as name,
+            COUNT(*) as count
+        FROM customer
+        WHERE status != 0 AND source IS NOT NULL AND source != ''
+        GROUP BY source
+        ORDER BY count DESC
+        LIMIT 10
+    </select>
+
+    <!-- 用户业绩统计 -->
+    <select id="getPerformanceByUser" resultType="java.util.HashMap">
+        SELECT
+            u.username as name,
+            COUNT(c.id) as customerCount,
+            SUM(CASE WHEN c.status = 2 THEN 1 ELSE 0 END) as dealCount,
+            ROUND(SUM(CASE WHEN c.status = 2 THEN 1 ELSE 0 END) * 100.0 / COUNT(c.id), 2) as dealRate
+        FROM user u
+        LEFT JOIN customer c ON u.id = c.owner_id AND c.status != 0
+        WHERE u.status = 1
+        GROUP BY u.id, u.username
+        HAVING customerCount > 0
+        ORDER BY dealCount DESC, customerCount DESC
+    </select>
+
 </mapper>

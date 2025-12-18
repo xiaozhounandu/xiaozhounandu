@@ -5,9 +5,11 @@ import com.xiaozhounandu.dto.response.DashboardResponse;
 import com.xiaozhounandu.entity.User;
 import com.xiaozhounandu.service.CustomerService;
 import com.xiaozhounandu.service.FollowUpService;
+import com.xiaozhounandu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +23,9 @@ public class StatsController {
 
     @Autowired
     private FollowUpService followUpService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/dashboard")
     public ApiResult<DashboardResponse> dashboard(@RequestHeader("Authorization") String token) {
@@ -45,7 +50,26 @@ public class StatsController {
         response.setRecent7Days(customerService.getRecent7Days());
         response.setByIndustry(customerService.getByIndustry());
         response.setByLevel(customerService.getByLevel());
+        response.setCustomerStatus(customerService.getCustomerStatus());
+        response.setMonthlyTrend(customerService.getMonthlyTrend());
+        response.setFollowUpByType(followUpService.getFollowUpByType());
 
         return ApiResult.success(response);
+    }
+
+    @GetMapping("/summary")
+    public ApiResult<Map<String, Object>> summary(@RequestHeader("Authorization") String token) {
+        User currentUser = AuthController.getUserByToken(token);
+        if (currentUser == null) {
+            return ApiResult.error("未登录或token已过期");
+        }
+
+        Map<String, Object> summary = new HashMap<>();
+        summary.put("totalUsers", userService.countTotalUsers());
+        summary.put("totalCustomers", customerService.countTotalCustomers());
+        summary.put("totalFollowUps", followUpService.countTotalFollowUps());
+        summary.put("lastUpdate", LocalDateTime.now());
+
+        return ApiResult.success(summary);
     }
 }

@@ -71,4 +71,8 @@
         WHERE id = #{id}
     </update>
 
+    <select id="countTotalUsers" resultType="long">
+        SELECT COUNT(*) FROM user WHERE status != 0
+    </select>
+
 </mapper>

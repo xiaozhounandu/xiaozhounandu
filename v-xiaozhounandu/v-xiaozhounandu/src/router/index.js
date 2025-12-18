@@ -70,6 +70,12 @@ const routes = [
         name: 'Profile',
         component: () => import('../views/user/Profile.vue'),
         meta: { title: '个人中心', icon: '👤' }
+      },
+      {
+        path: 'data-management',
+        name: 'DataManagement',
+        component: () => import('../views/data/DataManagement.vue'),
+        meta: { title: '数据管理', icon: '🔧', roles: ['ADMIN', 'MANAGER'] }
       }
     ]
   },

@@ -16,11 +16,12 @@ spring:
       write-dates-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
-  # 开发环境日志配置
-  logging:
-    level:
-      com.xiaozhounandu: DEBUG
-      org.springframework.web: DEBUG
+
+# 开发环境日志配置
+logging:
+  level:
+    com.xiaozhounandu: DEBUG
+    org.springframework.web: DEBUG
 
 server:
   port: 8080

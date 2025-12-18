@@ -117,12 +117,51 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Map<String, Object>> getByIndustry() {
-        return customerMapper.getByIndustry();
+    public Map<String, Object> getByIndustry() {
+        List<Map<String, Object>> industryList = customerMapper.getByIndustry();
+        Map<String, Object> industryMap = new HashMap<>();
+        for (Map<String, Object> industry : industryList) {
+            String name = (String) industry.get("name");
+            Long count = (Long) industry.get("count");
+            industryMap.put(name, count);
+        }
+        return industryMap;
     }
 
     @Override
-    public List<Map<String, Object>> getByLevel() {
-        return customerMapper.getByLevel();
+    public Map<String, Object> getByLevel() {
+        List<Map<String, Object>> levelList = customerMapper.getByLevel();
+        Map<String, Object> levelMap = new HashMap<>();
+        for (Map<String, Object> level : levelList) {
+            String name = (String) level.get("name");
+            Long count = (Long) level.get("count");
+            levelMap.put(name, count);
+        }
+        return levelMap;
+    }
+
+    @Override
+    public Map<String, Object> getCustomerStatus() {
+        List<Map<String, Object>> statusList = customerMapper.getByStatus();
+        Map<String, Object> statusMap = new HashMap<>();
+        for (Map<String, Object> status : statusList) {
+            String name = (String) status.get("name");
+            Long count = (Long) status.get("count");
+            statusMap.put(name, count);
+        }
+        return statusMap;
+    }
+
+    @Override
+    public List<Map<String, Object>> getMonthlyTrend() {
+        List<Map<String, Object>> monthlyData = customerMapper.getMonthlyTrend();
+        // 计算累计客户总数
+        long cumulativeTotal = 0;
+        for (Map<String, Object> monthData : monthlyData) {
+            long newCustomers = ((Number) monthData.get("newCustomers")).longValue();
+            cumulativeTotal += newCustomers;
+            monthData.put("totalCustomers", cumulativeTotal);
+        }
+        return monthlyData;
     }
 }

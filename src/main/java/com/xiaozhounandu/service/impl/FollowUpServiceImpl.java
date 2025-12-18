@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FollowUpServiceImpl implements FollowUpService {
@@ -60,5 +62,22 @@ public class FollowUpServiceImpl implements FollowUpService {
     @Override
     public Long countUpcomingFollowUps() {
         return (long) followUpMapper.countUpcomingFollowUps();
+    }
+
+    @Override
+    public long countTotalFollowUps() {
+        return followUpMapper.countTotalFollowUps();
+    }
+
+    @Override
+    public Map<String, Object> getFollowUpByType() {
+        List<Map<String, Object>> typeList = followUpMapper.getFollowUpByType();
+        Map<String, Object> typeMap = new HashMap<>();
+        for (Map<String, Object> type : typeList) {
+            String name = (String) type.get("name");
+            Long count = (Long) type.get("count");
+            typeMap.put(name, count);
+        }
+        return typeMap;
     }
 }

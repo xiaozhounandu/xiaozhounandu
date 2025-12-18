@@ -21,4 +21,7 @@ public interface UserService {
 
     // 注册用户（带密码加密）
     int register(User user);
+
+    // 统计用户总数
+    long countTotalUsers();
 }

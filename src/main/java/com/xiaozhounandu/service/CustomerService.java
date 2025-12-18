@@ -35,7 +35,11 @@ public interface CustomerService {
 
     List<Map<String, Object>> getRecent7Days();
 
-    List<Map<String, Object>> getByIndustry();
+    Map<String, Object> getByIndustry();
 
-    List<Map<String, Object>> getByLevel();
+    Map<String, Object> getByLevel();
+
+    Map<String, Object> getCustomerStatus();
+
+    List<Map<String, Object>> getMonthlyTrend();
 }

@@ -95,6 +95,12 @@ const menuItems = computed(() => [
     title: '个人中心',
     icon: '👤',
     visible: true
+  },
+  {
+    path: '/data-management',
+    title: '数据管理',
+    icon: '🔧',
+    visible: isAdmin() || isManager()
   }
 ])
 

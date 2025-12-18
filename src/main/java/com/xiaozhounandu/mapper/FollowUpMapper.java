@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface FollowUpMapper {
@@ -33,4 +34,10 @@ public interface FollowUpMapper {
 
     // 统计即将跟进数(未来3天内)
     int countUpcomingFollowUps();
+
+    // 统计跟进记录总数
+    long countTotalFollowUps();
+
+    // 按类型统计跟进记录
+    List<Map<String, Object>> getFollowUpByType();
 }

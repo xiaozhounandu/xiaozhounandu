@@ -29,11 +29,9 @@
       <div class="filter-group">
         <select v-model="searchParams.status" @change="handleSearch" class="filter-select">
           <option value="">全部状态</option>
-          <option value="potential">潜在客户</option>
-          <option value="contacted">已联系</option>
-          <option value="negotiating">谈判中</option>
-          <option value="success">已成交</option>
-          <option value="failed">已流失</option>
+          <option value="1">正常</option>
+          <option value="2">已成交</option>
+          <option value="3">已流失</option>
         </select>
 
         <select v-model="searchParams.source" @change="handleSearch" class="filter-select">
@@ -206,11 +204,10 @@ const displayPages = computed(() => {
 // 获取状态标签
 function getStatusLabel(status) {
   const map = {
-    'potential': '潜在客户',
-    'contacted': '已联系',
-    'negotiating': '谈判中',
-    'success': '已成交',
-    'failed': '已流失'
+    0: '删除',
+    1: '正常',
+    2: '已成交',
+    3: '已流失'
   }
   return map[status] || status
 }
@@ -511,11 +508,9 @@ onMounted(() => {
   color: white;
 }
 
-.status-potential { background: #3498db; }
-.status-contacted { background: #9b59b6; }
-.status-negotiating { background: #e67e22; }
-.status-success { background: #27ae60; }
-.status-failed { background: #e74c3c; }
+.status-1 { background: #3498db; }  /* 正常 */
+.status-2 { background: #27ae60; }  /* 已成交 */
+.status-3 { background: #e74c3c; }  /* 已流失 */
 
 .source-tag {
   background: #ecf0f1;

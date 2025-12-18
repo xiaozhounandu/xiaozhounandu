@@ -24,4 +24,6 @@ public interface UserMapper {
     int updateLastLoginTime(@Param("id") Long id);
 
     int deleteUserById(@Param("id") Long id);
+
+    long countTotalUsers();
 }

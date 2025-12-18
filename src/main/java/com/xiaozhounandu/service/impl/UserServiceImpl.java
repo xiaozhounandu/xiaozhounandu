@@ -71,4 +71,9 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.insertUser(user);
     }
+
+    @Override
+    public long countTotalUsers() {
+        return userMapper.countTotalUsers();
+    }
 }

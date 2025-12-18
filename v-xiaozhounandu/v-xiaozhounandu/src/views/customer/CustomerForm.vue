@@ -68,11 +68,9 @@
               <label>客户状态 <span class="required">*</span></label>
               <select v-model="form.status" required class="form-input">
                 <option value="">请选择状态</option>
-                <option value="potential">潜在客户</option>
-                <option value="contacted">已联系</option>
-                <option value="negotiating">谈判中</option>
-                <option value="success">已成交</option>
-                <option value="failed">已流失</option>
+                <option value="1">正常</option>
+                <option value="2">已成交</option>
+                <option value="3">已流失</option>
               </select>
             </div>
 

@@ -15,4 +15,8 @@ public interface FollowUpService {
     Long countTodayFollowUps();
 
     Long countUpcomingFollowUps();
+
+    long countTotalFollowUps();
+
+    java.util.Map<String, Object> getFollowUpByType();
 }

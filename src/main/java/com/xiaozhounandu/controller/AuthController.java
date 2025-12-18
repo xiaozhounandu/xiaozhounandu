@@ -46,6 +46,10 @@ public class AuthController {
 
         if (result == -1) {
             return ApiResult.error("用户名已存在");
+        } else if (result == -2) {
+            return ApiResult.error("用户名不能为空");
+        } else if (result == -3) {
+            return ApiResult.error("密码不能为空");
         }
 
         UserInfoResponse response = new UserInfoResponse(

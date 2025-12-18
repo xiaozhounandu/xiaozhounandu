@@ -60,4 +60,25 @@
         AND DATE(next_follow_time) BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)
     </select>
 
+    <!-- 统计跟进记录总数 -->
+    <select id="countTotalFollowUps" resultType="long">
+        SELECT COUNT(*) FROM follow_up
+    </select>
+
+    <!-- 按类型统计跟进记录 -->
+    <select id="getFollowUpByType" resultType="java.util.HashMap">
+        SELECT
+            CASE type
+                WHEN 'CALL' THEN '电话'
+                WHEN 'EMAIL' THEN '邮件'
+                WHEN 'MEETING' THEN '会议'
+                WHEN 'WECHAT' THEN '微信'
+                ELSE '其他'
+            END as name,
+            COUNT(*) as count
+        FROM follow_up
+        GROUP BY type
+        ORDER BY count DESC
+    </select>
+
 </mapper>

@@ -57,4 +57,10 @@ public interface CustomerMapper {
 
     // 按等级统计
     List<Map<String, Object>> getByLevel();
+
+    // 按状态统计
+    List<Map<String, Object>> getByStatus();
+
+    // 月度趋势统计
+    List<Map<String, Object>> getMonthlyTrend();
 }
